@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenNet</title>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getAuth, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDb50I7PRTkKfWe8ykOnys3dQCGnDegebQ",
+            authDomain: "greenet-9ab8c.firebaseapp.com",
+            databaseURL: "https://greenet-9ab8c-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "greenet-9ab8c",
+            storageBucket: "greenet-9ab8c.appspot.com",
+            messagingSenderId: "710711204901",
+            appId: "1:710711204901:web:d13941625baadc6d2533cc",
+            measurementId: "G-SVFDVEWFLB"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const auth = getAuth();
+
+        // Custom Firebase token for authentication
+        const customToken = "eyJhbGciOiAiUlMyNTYiLCAidHlwIjogIkpXVCIsICJraWQiOiAiYjE4ZjAxMWNiMzk3MjYwZDViMDU3N2FlOTljYzU3ZjRmNGNjMmQ1YiJ9.eyJpc3MiOiAiZmlyZWJhc2UtYWRtaW5zZGstbTg0OW5AZ3JlZW5ldC05YWI4Yy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsICJzdWIiOiAiZmlyZWJhc2UtYWRtaW5zZGstbTg0OW5AZ3JlZW5ldC05YWI4Yy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsICJhdWQiOiAiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCAidWlkIjogImdyZWVuZXQtOWFiOGMiLCAiaWF0IjogMTczMTM1MDI3OCwgImV4cCI6IDE3MzEzNTM4Nzh9.oa0SuvVZHiiLdYVCiKTUUOQWxg8ySQCh856lfGMadh5JXlBupVybeGunFrbV_jBcAsp3uEVsE-JbATyDc9eAyIxHvbDZYgbOXbsKa_i08TfO1p4BHASpxVTlgrpqOLfsAsg8aT5vS-iY-06W-0HST4AvZolj0E0Dm5zR31IQdGKnMluLWLP8b6v6gLAD8cKiBNd28RWL7pKf0jTW1p7tVTqbjoS9Q6XZ5I5588X12tUx9bUnD_-8ppvriswwDyjQBdj7DLS_E9H1sCNmqm4kiSGozlEhbOadESTFPCLzdLoqq3-6lWQUGTe2SuQDwJlzaZ58B2EtxQwQHW8ZSsncQw";
+
+        // Sign in with custom token
+        signInWithCustomToken(auth, customToken).catch((error) => {
+            console.error("Error signing in with custom token:", error);
+        });
+
+        // Monitor light level
+        const lightLevelRef = ref(database, '/lightLevel');
+        onValue(lightLevelRef, (snapshot) => {
+            const data = snapshot.val();
+            document.getElementById('lux-value').innerText = `${data} lux`;
+        });
+    </script>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" />
+</head>
+<body>
+    <!-- Hamburger Menu -->
+    <div class="hamburger" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+    
+    <header>
+        <img src="./images/logo.png" alt="logo">
+        <p>GreenNet</p>
+    </header>
+
+    <!-- Side Menu -->
+    <div class="menu" id="menu">
+        <p id="username">Username</p>
+        <button onclick="settings()">Settings</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+    
+    <!-- Battery Health -->
+    <div class="first-container">
+        <img src="./images/battery-health.png" alt="battery-health">
+        <div class="percentage-container">
+            <p><span id="health-value">80</span>%</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Display Grid -->
+    <div class="grid-container">
+        <div class="temp">
+            <p><span id="temp-value">30</span>&deg;</p>
+            <span class="material-symbols-outlined">thermometer</span>
+        </div>
+        <div class="hum">
+            <p><span id="hum-value">75</span>%</p>
+            <span class="material-symbols-outlined">humidity_mid</span>
+        </div>
+        <div class="third-container">
+            <p><span id="lux-value">960</span> lux</p>
+            <span class="material-symbols-outlined">brightness_6</span>
+        </div>
+        <div class="fourth-container">
+            <p><span id="nitrogen-value">25</span>mg/kg</p>
+            <div class="circle-icon">N</div>
+        </div>
+        <div class="fifth-container">
+            <p><span id="potassium-value">18</span>mg/kg</p>
+            <div class="circle-icon">K</div>
+        </div>
+        <div class="sixth-container">
+            <p><span id="phosphorus-value">128</span>mg/kg</p>
+            <div class="circle-icon">P</div>
+        </div>
+    </div>    
+
+    <script src="script.js"></script>
+</body>
+</html>
