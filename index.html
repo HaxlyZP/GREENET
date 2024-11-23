@@ -10,7 +10,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
         import { getAuth, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
+    
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDb50I7PRTkKfWe8ykOnys3dQCGnDegebQ",
@@ -22,27 +22,41 @@
             appId: "1:710711204901:web:d13941625baadc6d2533cc",
             measurementId: "G-SVFDVEWFLB"
         };
-
+    
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const auth = getAuth();
-
+    
         // Custom Firebase token for authentication
-        const customToken = "eyJhbGciOiAiUlMyNTYiLCAidHlwIjogIkpXVCIsICJraWQiOiAiYjE4ZjAxMWNiMzk3MjYwZDViMDU3N2FlOTljYzU3ZjRmNGNjMmQ1YiJ9.eyJpc3MiOiAiZmlyZWJhc2UtYWRtaW5zZGstbTg0OW5AZ3JlZW5ldC05YWI4Yy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsICJzdWIiOiAiZmlyZWJhc2UtYWRtaW5zZGstbTg0OW5AZ3JlZW5ldC05YWI4Yy5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsICJhdWQiOiAiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCAidWlkIjogImdyZWVuZXQtOWFiOGMiLCAiaWF0IjogMTczMTM1MDI3OCwgImV4cCI6IDE3MzEzNTM4Nzh9.oa0SuvVZHiiLdYVCiKTUUOQWxg8ySQCh856lfGMadh5JXlBupVybeGunFrbV_jBcAsp3uEVsE-JbATyDc9eAyIxHvbDZYgbOXbsKa_i08TfO1p4BHASpxVTlgrpqOLfsAsg8aT5vS-iY-06W-0HST4AvZolj0E0Dm5zR31IQdGKnMluLWLP8b6v6gLAD8cKiBNd28RWL7pKf0jTW1p7tVTqbjoS9Q6XZ5I5588X12tUx9bUnD_-8ppvriswwDyjQBdj7DLS_E9H1sCNmqm4kiSGozlEhbOadESTFPCLzdLoqq3-6lWQUGTe2SuQDwJlzaZ58B2EtxQwQHW8ZSsncQw";
-
+        const customToken = "YOUR_CUSTOM_TOKEN";  // Use your actual token here
+    
         // Sign in with custom token
         signInWithCustomToken(auth, customToken).catch((error) => {
             console.error("Error signing in with custom token:", error);
         });
-
-        // Monitor light level
+    
+        // Monitor temperature, humidity, and light level
+        const tempRef = ref(database, '/temperature');
+        const humRef = ref(database, '/humidity');
         const lightLevelRef = ref(database, '/lightLevel');
-        onValue(lightLevelRef, (snapshot) => {
-            const data = snapshot.val();
-            document.getElementById('lux-value').innerText = `${data} lux`;
+    
+        // Update the temperature and humidity values on the webpage
+        onValue(tempRef, (snapshot) => {
+            const temperature = snapshot.val();
+            document.getElementById('temp-value').innerText = `${temperature}°C`;
         });
-    </script>
+    
+        onValue(humRef, (snapshot) => {
+            const humidity = snapshot.val();
+            document.getElementById('hum-value').innerText = `${humidity}%`;
+        });
+    
+        onValue(lightLevelRef, (snapshot) => {
+            const lightLevel = snapshot.val();
+            document.getElementById('lux-value').innerText = `${lightLevel} lux`;
+        });
+    </script>    
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="style.css">
