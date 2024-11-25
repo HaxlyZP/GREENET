@@ -35,6 +35,26 @@
         signInWithCustomToken(auth, customToken).catch((error) => {
             console.error("Error signing in with custom token:", error);
         });
+
+                // Monitor NPK values
+                const nitrogenRef = ref(database, '/npk/nitrogen');
+        const phosphorusRef = ref(database, '/npk/phosphorus');
+        const potassiumRef = ref(database, '/npk/potassium');
+    
+        onValue(nitrogenRef, (snapshot) => {
+            const nitrogen = snapshot.val();
+            document.getElementById('nitrogen-value').innerText = `${nitrogen} mg/kg`;
+        });
+    
+        onValue(phosphorusRef, (snapshot) => {
+            const phosphorus = snapshot.val();
+            document.getElementById('phosphorus-value').innerText = `${phosphorus} mg/kg`;
+        });
+    
+        onValue(potassiumRef, (snapshot) => {
+            const potassium = snapshot.val();
+            document.getElementById('potassium-value').innerText = `${potassium} mg/kg`;
+        });
     
         // Monitor temperature, humidity, and light level
         const tempRef = ref(database, '/temperature');
